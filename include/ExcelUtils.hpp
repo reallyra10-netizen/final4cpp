@@ -3,6 +3,8 @@
 #include <vector>
 #include "Student.hpp"
 
-void writeExcel(const std::string &filename, std::vector<Student> &students);
-std::vector<Student> readExcelToVector(const std::string &filename);
-void readExcel(const std::string &filename);
+using std::string; 
+
+void writeExcel(const string &filename, std::vector<Student> &students);
+std::vector<Student> readExcelToVector(const string &filename);
+void readExcel(const string &filename);

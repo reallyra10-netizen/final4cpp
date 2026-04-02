@@ -3,5 +3,7 @@
 #include <string>
 #include "Student.hpp"
 
-void displayTable(const std::vector<Student> &students);
-void printMenu(const std::vector<std::string> &items);
+using std::vector; 
+using std::string; 
+void displayTable(const vector<Student> &students);
+void printMenu(const vector<string> &items);

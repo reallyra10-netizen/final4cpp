@@ -1,15 +1,15 @@
 #pragma once
 #include <string>
-
+using std::string; 
 class Student {
 private:
-    std::string name;
+    string name;
     int age;
 
 public:
-    Student(std::string name, int age);
-    std::string getName() const;
+    Student(string name, int age);
+    string getName() const;
     int getAge() const;
-    void setName(std::string name);
+    void setName(string name);
     void setAge(int age);
 };

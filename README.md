@@ -11,3 +11,14 @@ cd build
 cmake .. 
 cmake --build  . 
 ```
+
+```bash
+just run 
+just build 
+```
+
+- For working with window you can follow the guides video belows: 
+```
+
+- For working with window you can follow the guides video belows: 
+1. https://www.youtube.com/watch?v=RWXjhBjU8wY
