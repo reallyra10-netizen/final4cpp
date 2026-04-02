@@ -4,7 +4,8 @@ Sample project for demo to students
 2. about the excel files 
 
 
-```bash 
+```bash
+sudo apt install cmake -y  
 mkdir build
 cd build 
 cmake .. 
