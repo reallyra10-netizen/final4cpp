@@ -18,7 +18,7 @@ private:
     float salary;
 
 public:
-    Worker() {}
+    Worker() : id(0), name(""), age(0), salary(0.0f) {}
 
     void input()
     {
@@ -50,6 +50,13 @@ public:
         cin >> salary;
     }
 
+    // Setter methods
+    void setId(int i) { id = i; }
+    void setName(string n) { name = n; }
+    void setAge(int a) { age = a; }
+    void setSalary(float s) { salary = s; }
+
+    // Getter methods
     int getId() { return id; }
     string getName() { return name; }
     int getAge() { return age; }
@@ -79,7 +86,7 @@ void exportExcel(vector<Worker> &workers)
         r++;
     }
 
-    wb.save("workersaccount.xlsx");
+    wb.save("workersadata.xlsx");
 }
 
 /* ================= SORT ================= */
@@ -176,7 +183,7 @@ void registerNewUser()
     cout << "Password: ";
     cin >> password;
     
-    cout << "Role (1. Admin / 2. Worker): ";
+    cout << "Role: \n1. 🔐 Admin  \n2. 👷Worker ";
     cin >> roleInput;
     
     if (roleInput == "1" || roleInput == "admin") {
@@ -226,6 +233,53 @@ void workerPage()
     cout << "====================================\n";
 }
 
+/* ================= LOAD WORKERS FROM EXCEL ================= */
+void loadWorkersFromExcel(vector<Worker> &workers)
+{
+    xlnt::workbook wb;
+    try {
+        wb.load("workersaccount.xlsx");
+    } catch (...) {
+        return;
+    }
+
+    auto ws = wb.active_sheet();
+    int loadedCount = 0;
+    
+    for (auto row : ws.rows(false)) {
+        // Skip header row
+        if (row[0].to_string() == "ID") continue;
+        
+        try {
+            int id = stoi(row[0].to_string());
+            string name = row[1].to_string();
+            int age = stoi(row[2].to_string());
+            
+            // Remove "$" from salary if present
+            string salaryStr = row[3].to_string();
+            size_t dollarPos = salaryStr.find('$');
+            if (dollarPos != string::npos) {
+                salaryStr = salaryStr.substr(0, dollarPos);
+            }
+            float salary = stof(salaryStr);
+            
+            // Create worker and add to vector
+            Worker w;
+            w.setId(id);
+            w.setName(name);
+            w.setAge(age);
+            w.setSalary(salary);
+            workers.push_back(w);
+            loadedCount++;
+        } catch (...) {
+            // Skip rows that can't be parsed
+            continue;
+        }
+    }
+    
+  
+}
+
 /* ================= MENU ================= */
 void menu()
 {
@@ -247,6 +301,7 @@ void menu()
 int main()
 {
     system("cls");
+    //show emoji configuration for windows console
     SetConsoleCP(65001);
     SetConsoleOutputCP(65001);
     vector<Worker> workers;
@@ -280,6 +335,8 @@ int main()
                         isAdmin = false;
                         workerPage();
                     }
+                    // Load persisted workers from Excel file
+                    loadWorkersFromExcel(workers);
                     loginSuccess = true;
                 }
             } else if (option == 3) {
@@ -310,7 +367,7 @@ int main()
                 w.input();
                 workers.push_back(w);
                 exportExcel(workers);
-                cout << "\n➕ Added successfully!\n";
+                cout << "\n✅ Added successfully!\n";
                 cout << "ID: " << w.getId() << " | Name: " << w.getName() 
                      << " | Age: " << w.getAge() << " | Salary: " << (int)w.getSalary() << "$\n";
                 break;
@@ -326,7 +383,7 @@ int main()
                     if (workers[i].getId() == id) {
                         workers[i].update();
                         exportExcel(workers);
-                        cout << "\n✏️ Updated successfully!\n";
+                        cout << "\n✅ Updated successfully!\n";
                         found = 1;
                     }
                 }
@@ -376,7 +433,7 @@ int main()
                     if (workers[i].getId() == id) {
                         workers.erase(workers.begin() + i);
                         exportExcel(workers);
-                        cout << "\n🗑️ Deleted successfully!\n";
+                        cout << "\n✅ Deleted successfully!\n";
                         found = 1;
                         break;
                     }
@@ -394,7 +451,7 @@ int main()
                 vector<Worker> result;
                 int c;
 
-                cout << "Search 1.By ID 2.By Name 3.By Age: ";
+                cout << "Search \n1.By ID \n2.By Name \n3.By Age: ";
                 cin >> c;
 
                 if (c == 1) {
@@ -432,7 +489,7 @@ int main()
 
             case 6:
             {
-                cout << "\n🚪 Logout successful! Returning to login page...\n";
+                cout << "\n✅ Logout successful! Returning to login page...\n";
                 break;
             }
 
