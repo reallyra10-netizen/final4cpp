@@ -20,6 +20,7 @@ private:
 public:
     Worker() : id(0), name(""), age(0), salary(0.0f) {}
 
+    //Vichhet
     void input()
     {
         cout << "\n+---------------------------+\n";
@@ -36,6 +37,7 @@ public:
         cin >> salary;
     }
 
+    //Vichhet
     void update()
     {
         cout << "\n+---------------------------+\n";
@@ -101,6 +103,7 @@ void sortByIdAsc(vector<Worker> &w)
     }
 }
 
+//Dy sorint
 void sortSalaryLowHigh(vector<Worker> &w)
 {
     for (int i = 0; i < w.size(); i++) {
@@ -112,6 +115,7 @@ void sortSalaryLowHigh(vector<Worker> &w)
     }
 }
 
+//Dy sorint
 void sortSalaryHighLow(vector<Worker> &w)
 {
     for (int i = 0; i < w.size(); i++) {
@@ -124,6 +128,7 @@ void sortSalaryHighLow(vector<Worker> &w)
 }
 
 /* ================= TABLE ================= */
+//Kun sokea
 void showTable(vector<Worker> &list)
 {
     if (list.size() == 0) {
@@ -170,6 +175,7 @@ void showSearchTable(vector<Worker> result)
 }
 
 /* ================= REGISTRATION ================= */
+//Sovannara
 void registerNewUser()
 {
     string username, password, roleInput, role;
@@ -200,6 +206,7 @@ void registerNewUser()
 
 /* ================= LOGIN ================= */
 /* ================= UNIFIED LOGIN ================= */
+//Phanet
 pair<bool, string> login()
 {
     string u, p;
@@ -425,6 +432,7 @@ int main()
 
             case 4:
             {
+                //Dararithy
                 int id, found = 0;
                 cout << "Delete ID: ";
                 cin >> id;
@@ -448,6 +456,7 @@ int main()
 
             case 5:
             {
+                //Sethapiseth
                 vector<Worker> result;
                 int c;
 
@@ -489,6 +498,7 @@ int main()
 
             case 6:
             {
+                //Phanet
                 cout << "\n✅ Logout successful! Returning to login page...\n";
                 break;
             }
