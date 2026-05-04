@@ -20,7 +20,7 @@ private:
 public:
     Worker() : id(0), name(""), age(0), salary(0.0f) {}
 
-    //Vichhet
+    // Vichhet
     void input()
     {
         cout << "\n+---------------------------+\n";
@@ -37,7 +37,7 @@ public:
         cin >> salary;
     }
 
-    //Vichhet
+    // Vichhet
     void update()
     {
         cout << "\n+---------------------------+\n";
@@ -88,39 +88,48 @@ void exportExcel(vector<Worker> &workers)
         r++;
     }
 
-    wb.save("workersadata.xlsx");
+    wb.save("workersdata.xlsx");
 }
 
 /* ================= SORT ================= */
 void sortByIdAsc(vector<Worker> &w)
 {
-    for (int i = 0; i < w.size(); i++) {
-        for (int j = i + 1; j < w.size(); j++) {
-            if (w[i].getId() > w[j].getId()) {
+    for (int i = 0; i < w.size(); i++)
+    {
+        for (int j = i + 1; j < w.size(); j++)
+        {
+            if (w[i].getId() > w[j].getId())
+            {
                 swap(w[i], w[j]);
             }
         }
     }
 }
 
-//Dy sorint
+// Dy sorint
 void sortSalaryLowHigh(vector<Worker> &w)
 {
-    for (int i = 0; i < w.size(); i++) {
-        for (int j = i + 1; j < w.size(); j++) {
-            if (w[i].getSalary() > w[j].getSalary()) {
+    for (int i = 0; i < w.size(); i++)
+    {
+        for (int j = i + 1; j < w.size(); j++)
+        {
+            if (w[i].getSalary() > w[j].getSalary())
+            {
                 swap(w[i], w[j]);
             }
         }
     }
 }
 
-//Dy sorint
+// Dy sorint
 void sortSalaryHighLow(vector<Worker> &w)
 {
-    for (int i = 0; i < w.size(); i++) {
-        for (int j = i + 1; j < w.size(); j++) {
-            if (w[i].getSalary() < w[j].getSalary()) {
+    for (int i = 0; i < w.size(); i++)
+    {
+        for (int j = i + 1; j < w.size(); j++)
+        {
+            if (w[i].getSalary() < w[j].getSalary())
+            {
                 swap(w[i], w[j]);
             }
         }
@@ -128,10 +137,11 @@ void sortSalaryHighLow(vector<Worker> &w)
 }
 
 /* ================= TABLE ================= */
-//Kun sokea
+// Kun sokea
 void showTable(vector<Worker> &list)
 {
-    if (list.size() == 0) {
+    if (list.size() == 0)
+    {
         cout << "\nℹ️ No worker data found!\n";
         return;
     }
@@ -139,13 +149,12 @@ void showTable(vector<Worker> &list)
     Table t;
     t.add_row({"ID", "Name", "Age", "Salary"});
 
-    for (int i = 0; i < list.size(); i++) {
-        t.add_row({
-            to_string(list[i].getId()),
-            list[i].getName(),
-            to_string(list[i].getAge()),
-            to_string((int)list[i].getSalary()) + "$"
-        });
+    for (int i = 0; i < list.size(); i++)
+    {
+        t.add_row({to_string(list[i].getId()),
+                   list[i].getName(),
+                   to_string(list[i].getAge()),
+                   to_string((int)list[i].getSalary()) + "$"});
     }
 
     cout << t << endl;
@@ -154,28 +163,28 @@ void showTable(vector<Worker> &list)
 /* ================= SEARCH ================= */
 void showSearchTable(vector<Worker> result)
 {
-    if (result.size() == 0) {
-        cout << "\n🔎 No data found!\n";
+    if (result.size() == 0)
+    {
+        cout << "\n❌ No data found!\n";
         return;
     }
 
     Table t;
     t.add_row({"ID", "Name", "Age", "Salary"});
 
-    for (int i = 0; i < result.size(); i++) {
-        t.add_row({
-            to_string(result[i].getId()),
-            result[i].getName(),
-            to_string(result[i].getAge()),
-            to_string((int)result[i].getSalary()) + "$"
-        });
+    for (int i = 0; i < result.size(); i++)
+    {
+        t.add_row({to_string(result[i].getId()),
+                   result[i].getName(),
+                   to_string(result[i].getAge()),
+                   to_string((int)result[i].getSalary()) + "$"});
     }
 
     cout << t << endl;
 }
 
 /* ================= REGISTRATION ================= */
-//Sovannara
+// Sovannara
 void registerNewUser()
 {
     string username, password, roleInput, role;
@@ -188,25 +197,30 @@ void registerNewUser()
     cin >> username;
     cout << "Password: ";
     cin >> password;
-    
+
     cout << "Role: \n1. 🔐 Admin  \n2. 👷Worker ";
     cin >> roleInput;
-    
-    if (roleInput == "1" || roleInput == "admin") {
+
+    if (roleInput == "1" || roleInput == "admin")
+    {
         role = "admin";
-    } else if (roleInput == "2" || roleInput == "worker") {
+    }
+    else if (roleInput == "2" || roleInput == "worker")
+    {
         role = "worker";
-    } else {
+    }
+    else
+    {
         cout << "\n❌ Invalid role selection!\n";
         return;
     }
-    
+
     UserManager::registerUser(username, password, role);
 }
 
 /* ================= LOGIN ================= */
 /* ================= UNIFIED LOGIN ================= */
-//Phanet
+// Phanet
 pair<bool, string> login()
 {
     string u, p;
@@ -218,11 +232,15 @@ pair<bool, string> login()
     cin >> p;
 
     string role = UserManager::loginUser(u, p);
-    
-    if (!role.empty()) {
-        if (role == "admin") {
+
+    if (!role.empty())
+    {
+        if (role == "admin")
+        {
             cout << "\n✅ Login successfully (Admin)\n";
-        } else if (role == "worker") {
+        }
+        else if (role == "worker")
+        {
             cout << "\n✅ Login successfully (Worker)\n";
         }
         return {true, role};
@@ -244,32 +262,39 @@ void workerPage()
 void loadWorkersFromExcel(vector<Worker> &workers)
 {
     xlnt::workbook wb;
-    try {
-        wb.load("workersaccount.xlsx");
-    } catch (...) {
+    try
+    {
+        wb.load("workersdata.xlsx");
+    }
+    catch (...)
+    {
         return;
     }
 
     auto ws = wb.active_sheet();
     int loadedCount = 0;
-    
-    for (auto row : ws.rows(false)) {
+
+    for (auto row : ws.rows(false))
+    {
         // Skip header row
-        if (row[0].to_string() == "ID") continue;
-        
-        try {
+        if (row[0].to_string() == "ID")
+            continue;
+
+        try
+        {
             int id = stoi(row[0].to_string());
             string name = row[1].to_string();
             int age = stoi(row[2].to_string());
-            
+
             // Remove "$" from salary if present
             string salaryStr = row[3].to_string();
             size_t dollarPos = salaryStr.find('$');
-            if (dollarPos != string::npos) {
+            if (dollarPos != string::npos)
+            {
                 salaryStr = salaryStr.substr(0, dollarPos);
             }
             float salary = stof(salaryStr);
-            
+
             // Create worker and add to vector
             Worker w;
             w.setId(id);
@@ -278,13 +303,13 @@ void loadWorkersFromExcel(vector<Worker> &workers)
             w.setSalary(salary);
             workers.push_back(w);
             loadedCount++;
-        } catch (...) {
+        }
+        catch (...)
+        {
             // Skip rows that can't be parsed
             continue;
         }
     }
-    
-  
 }
 
 /* ================= MENU ================= */
@@ -308,19 +333,21 @@ void menu()
 int main()
 {
     system("cls");
-    //show emoji configuration for windows console
+    // show emoji configuration for windows console
     SetConsoleCP(65001);
     SetConsoleOutputCP(65001);
     vector<Worker> workers;
     bool runProgram = true;
 
-    while (runProgram) {
+    while (runProgram)
+    {
         bool isAdmin = false;
         int option;
         bool loginSuccess = false;
 
         /* ================= LOGIN SYSTEM ================= */
-        while (!loginSuccess) {
+        while (!loginSuccess)
+        {
             cout << "\n====================================\n";
             cout << "       USER AUTHENTICATION          \n";
             cout << "====================================\n";
@@ -331,14 +358,21 @@ int main()
             cout << " Choose: ";
             cin >> option;
 
-            if (option == 1) {
+            if (option == 1)
+            {
                 registerNewUser();
-            } else if (option == 2) {
+            }
+            else if (option == 2)
+            {
                 auto [success, role] = login();
-                if (success) {
-                    if (role == "admin") {
+                if (success)
+                {
+                    if (role == "admin")
+                    {
                         isAdmin = true;
-                    } else {
+                    }
+                    else
+                    {
                         isAdmin = false;
                         workerPage();
                     }
@@ -346,11 +380,15 @@ int main()
                     loadWorkersFromExcel(workers);
                     loginSuccess = true;
                 }
-            } else if (option == 3) {
+            }
+            else if (option == 3)
+            {
                 cout << "\n👋 Goodbye!\n";
                 runProgram = false;
                 loginSuccess = true;
-            } else {
+            }
+            else
+            {
                 cout << "\n❌ Invalid option (choose 1, 2, or 3)\n";
             }
         }
@@ -358,16 +396,19 @@ int main()
         int op;
 
         /* ================= MENU LOOP ================= */
-        do {
+        do
+        {
             menu();
             cin >> op;
 
-            if (!isAdmin && (op == 1 || op == 2 || op == 4)) {
+            if (!isAdmin && (op == 1 || op == 2 || op == 4))
+            {
                 cout << "\n❌ Admin only feature!\n";
                 continue;
             }
 
-            switch (op) {
+            switch (op)
+            {
             case 1:
             {
                 Worker w;
@@ -375,7 +416,7 @@ int main()
                 workers.push_back(w);
                 exportExcel(workers);
                 cout << "\n✅ Added successfully!\n";
-                cout << "ID: " << w.getId() << " | Name: " << w.getName() 
+                cout << "ID: " << w.getId() << " | Name: " << w.getName()
                      << " | Age: " << w.getAge() << " | Salary: " << (int)w.getSalary() << "$\n";
                 break;
             }
@@ -386,8 +427,10 @@ int main()
                 cout << "Enter ID: ";
                 cin >> id;
 
-                for (int i = 0; i < workers.size(); i++) {
-                    if (workers[i].getId() == id) {
+                for (int i = 0; i < workers.size(); i++)
+                {
+                    if (workers[i].getId() == id)
+                    {
                         workers[i].update();
                         exportExcel(workers);
                         cout << "\n✅ Updated successfully!\n";
@@ -395,7 +438,8 @@ int main()
                     }
                 }
 
-                if (!found) {
+                if (!found)
+                {
                     cout << "\n❌ No data found!\n";
                 }
 
@@ -416,13 +460,20 @@ int main()
                 cout << " Choose: ";
                 cin >> choice;
 
-                if (choice == 1) {
+                if (choice == 1)
+                {
                     sortByIdAsc(workers);
-                } else if (choice == 2) {
+                }
+                else if (choice == 2)
+                {
                     sortSalaryLowHigh(workers);
-                } else if (choice == 3) {
+                }
+                else if (choice == 3)
+                {
                     sortSalaryHighLow(workers);
-                } else {
+                }
+                else
+                {
                     cout << "\n❌ Invalid option, showing default\n";
                 }
 
@@ -432,13 +483,15 @@ int main()
 
             case 4:
             {
-                //Dararithy
+                // Dararithy
                 int id, found = 0;
                 cout << "Delete ID: ";
                 cin >> id;
 
-                for (int i = 0; i < workers.size(); i++) {
-                    if (workers[i].getId() == id) {
+                for (int i = 0; i < workers.size(); i++)
+                {
+                    if (workers[i].getId() == id)
+                    {
                         workers.erase(workers.begin() + i);
                         exportExcel(workers);
                         cout << "\n✅ Deleted successfully!\n";
@@ -447,7 +500,8 @@ int main()
                     }
                 }
 
-                if (!found) {
+                if (!found)
+                {
                     cout << "\n❌ No data found!\n";
                 }
 
@@ -456,37 +510,48 @@ int main()
 
             case 5:
             {
-                //Sethapiseth
+                // Sethapiseth
                 vector<Worker> result;
                 int c;
 
                 cout << "Search \n1.By ID \n2.By Name \n3.By Age: ";
                 cin >> c;
 
-                if (c == 1) {
+                if (c == 1)
+                {
                     int id;
                     cin >> id;
 
-                    for (auto &w : workers) {
-                        if (w.getId() == id) {
+                    for (auto &w : workers)
+                    {
+                        if (w.getId() == id)
+                        {
                             result.push_back(w);
                         }
                     }
-                } else if (c == 2) {
+                }
+                else if (c == 2)
+                {
                     string n;
                     cin >> n;
 
-                    for (auto &w : workers) {
-                        if (w.getName() == n) {
+                    for (auto &w : workers)
+                    {
+                        if (w.getName() == n)
+                        {
                             result.push_back(w);
                         }
                     }
-                } else if (c == 3) {
+                }
+                else if (c == 3)
+                {
                     int age;
                     cin >> age;
 
-                    for (auto &w : workers) {
-                        if (w.getAge() == age) {
+                    for (auto &w : workers)
+                    {
+                        if (w.getAge() == age)
+                        {
                             result.push_back(w);
                         }
                     }
@@ -498,7 +563,7 @@ int main()
 
             case 6:
             {
-                //Phanet
+                // Phanet
                 cout << "\n✅ Logout successful! Returning to login page...\n";
                 break;
             }
