@@ -32,3 +32,8 @@ add_executable(WorkerConsole main.cpp src/Student.cpp src/ExcelUtils.cpp src/Men
 target_include_directories(WorkerConsole PRIVATE include )
 # Link libraries
 target_link_libraries(WorkerConsole PRIVATE xlnt tabulate)
+
+add_custom_command(TARGET WorkerConsole POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/build/_deps/xlnt-build/source/Release/xlnt.dll"
+        $<TARGET_FILE_DIR:WorkerConsole>)

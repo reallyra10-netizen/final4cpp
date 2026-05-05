@@ -88,7 +88,7 @@ void exportExcel(vector<Worker> &workers)
         r++;
     }
 
-    wb.save("workersadata.xlsx");
+    wb.save("workersdata.xlsx");
 }
 
 /* ================= SORT ================= */
@@ -264,7 +264,7 @@ void loadWorkersFromExcel(vector<Worker> &workers)
     xlnt::workbook wb;
     try
     {
-        wb.load("workersaccount.xlsx");
+        wb.load("workersdata.xlsx");
     }
     catch (...)
     {
