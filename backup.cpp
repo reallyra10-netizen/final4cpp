@@ -20,7 +20,7 @@ private:
 public:
     Worker() : id(0), name(""), age(0), salary(0.0f) {}
 
-    // Vichhet
+    /* ================= Vichhet - Add worker ================= */
     void input()
     {
         cout << "\n+---------------------------+\n";
@@ -37,7 +37,7 @@ public:
         cin >> salary;
     }
 
-    // Vichhet
+    /* ================= Vichhet - Update worker ================= */
     void update()
     {
         cout << "\n+---------------------------+\n";
@@ -106,7 +106,7 @@ void sortByIdAsc(vector<Worker> &w)
     }
 }
 
-// Dy sorint
+/* ================= Dy sorint - Show data as table (salary-low-high) ================= */
 void sortSalaryLowHigh(vector<Worker> &w)
 {
     for (int i = 0; i < w.size(); i++)
@@ -121,7 +121,7 @@ void sortSalaryLowHigh(vector<Worker> &w)
     }
 }
 
-// Dy sorint
+/* ================= Dy sorint - Show data as table (salary-high-low) ================= */
 void sortSalaryHighLow(vector<Worker> &w)
 {
     for (int i = 0; i < w.size(); i++)
@@ -137,7 +137,7 @@ void sortSalaryHighLow(vector<Worker> &w)
 }
 
 /* ================= TABLE ================= */
-// Kun sokea
+/* ================= Kun sokea - Show data as table (default) ================= */
 void showTable(vector<Worker> &list)
 {
     if (list.size() == 0)
@@ -184,7 +184,7 @@ void showSearchTable(vector<Worker> result)
 }
 
 /* ================= REGISTRATION ================= */
-// Sovannara
+/* ================= Sovannara - Register ================= */
 void registerNewUser()
 {
     string username, password, roleInput, role;
@@ -218,9 +218,9 @@ void registerNewUser()
     UserManager::registerUser(username, password, role);
 }
 
-/* ================= LOGIN ================= */
-/* ================= UNIFIED LOGIN ================= */
-// Phanet
+/* ================= LOGIN(UNIFIED LOGIN)  ================= */
+             
+/* ================= Phanet - Login ================= */
 pair<bool, string> login()
 {
     string u, p;
@@ -259,54 +259,56 @@ void workerPage()
 }
 
 /* ================= LOAD WORKERS FROM EXCEL ================= */
+#include <xlnt/xlnt.hpp>
+
+/* ================= LOAD WORKERS FROM EXCEL ================= */
 void loadWorkersFromExcel(vector<Worker> &workers)
 {
+    workers.clear();
+
     xlnt::workbook wb;
     try
     {
         wb.load("workersdata.xlsx");
     }
-    catch (...)
+    catch (const std::exception &e)
     {
+        std::cerr << "Failed to load Excel file: " << e.what() << std::endl;
         return;
     }
 
     auto ws = wb.active_sheet();
-    int loadedCount = 0;
-
+    bool firstRow = true;
     for (auto row : ws.rows(false))
     {
-        // Skip header row
-        if (row[0].to_string() == "ID")
-            continue;
-
+        if (firstRow)
+        {
+            firstRow = false;
+            continue; 
+        }
         try
         {
-            int id = stoi(row[0].to_string());
-            string name = row[1].to_string();
-            int age = stoi(row[2].to_string());
-
-            // Remove "$" from salary if present
-            string salaryStr = row[3].to_string();
+            
+            int id = row[0].value<int>();
+            std::string name = row[1].to_string();
+            int age = row[2].value<int>();
+            std::string salaryStr = row[3].to_string();
             size_t dollarPos = salaryStr.find('$');
-            if (dollarPos != string::npos)
-            {
+            if (dollarPos != std::string::npos)
                 salaryStr = salaryStr.substr(0, dollarPos);
-            }
-            float salary = stof(salaryStr);
+            float salary = std::stof(salaryStr);
 
-            // Create worker and add to vector
             Worker w;
             w.setId(id);
             w.setName(name);
             w.setAge(age);
             w.setSalary(salary);
             workers.push_back(w);
-            loadedCount++;
         }
-        catch (...)
+        catch (const std::exception &e)
         {
-            // Skip rows that can't be parsed
+            
+            std::cerr << "Row parsing error: " << e.what() << std::endl;
             continue;
         }
     }
@@ -413,11 +415,27 @@ int main()
             {
                 Worker w;
                 w.input();
-                workers.push_back(w);
-                exportExcel(workers);
-                cout << "\n✅ Added successfully!\n";
-                cout << "ID: " << w.getId() << " | Name: " << w.getName()
-                     << " | Age: " << w.getAge() << " | Salary: " << (int)w.getSalary() << "$\n";
+                bool duplicate = false;
+                for (int i = 0; i < workers.size(); i++)
+                {
+                    if (workers[i].getId() == w.getId() || workers[i].getName() == w.getName())
+                    {
+                        duplicate = true; 
+                        break;
+                    }
+                }
+                if (duplicate)
+                {
+                    cout << "\n❌ Failed to add: Worker with the same ID or Name already exists!\n";
+                }
+                else
+                {
+                    workers.push_back(w); 
+                    exportExcel(workers); 
+                    cout << "\n✅ Added successfully!\n";
+                    cout << "ID: " << w.getId() << " | Name: " << w.getName()
+                         << " | Age: " << w.getAge() << " | Salary: " << (int)w.getSalary() << "$\n";
+                }
                 break;
             }
 
@@ -483,7 +501,7 @@ int main()
 
             case 4:
             {
-                // Dararithy
+                /* ================= Dararithy - Delete Worker ================= */
                 int id, found = 0;
                 cout << "Delete ID: ";
                 cin >> id;
@@ -510,7 +528,7 @@ int main()
 
             case 5:
             {
-                // Sethapiseth
+                /* ================= Sethapiseth - Search workers ================= */
                 vector<Worker> result;
                 int c;
 
@@ -563,7 +581,7 @@ int main()
 
             case 6:
             {
-                // Phanet
+                /* ================= Phanet - Logout ================= */
                 cout << "\n✅ Logout successful! Returning to login page...\n";
                 break;
             }
