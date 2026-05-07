@@ -1,10 +1,5 @@
-#!/bin/bash 
-message="$1"
-if [ -z "$message" ]; then 
-    echo "Usage is : bash $0 <commit> " 
-    exit 1 
-fi 
+#!/bin/bash
 
 git add .
-git commit -m "add color"
-git push -u origin
+git commit -m "updated"
+git push
