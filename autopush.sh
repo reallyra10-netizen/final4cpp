@@ -6,5 +6,5 @@ if [ -z "$message" ]; then
 fi 
 
 git add .
-git commit -m "$message"
+git commit -m "add color"
 git push -u origin

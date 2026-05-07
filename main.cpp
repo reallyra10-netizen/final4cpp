@@ -8,6 +8,50 @@
 using namespace std;
 using namespace tabulate;
 
+/* ================= COLOR HELPER ================= */
+HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+void setColor(int color)
+{
+    SetConsoleTextAttribute(hConsole, color);
+}
+
+void resetColor()
+{
+    SetConsoleTextAttribute(hConsole, 7);
+}
+
+/* ================= INPUT VALIDATOR ================= */
+// Returns true if a valid integer was read, false if user typed letters/symbols
+bool readInt(int &out)
+{
+    string input;
+    cin >> input;
+    for (char c : input)
+    {
+        if (!isdigit(c) && !(c == '-' && &c == &input[0]))
+        {
+            setColor(12);
+            cout << "\n  ⚠️  Invalid input! Please enter a NUMBER, not a letter.\n";
+            resetColor();
+            cin.clear();
+            return false;
+        }
+    }
+    try
+    {
+        out = stoi(input);
+        return true;
+    }
+    catch (...)
+    {
+        setColor(12);
+        cout << "\n  ⚠️  Invalid input! Number out of range.\n";
+        resetColor();
+        return false;
+    }
+}
+
 /* ================= WORKER CLASS ================= */
 class Worker
 {
@@ -23,33 +67,133 @@ public:
     /* ================= Vichhet - Add worker ================= */
     void input()
     {
+        setColor(11);
         cout << "\n+---------------------------+\n";
         cout << "|      ADD WORKER          |\n";
         cout << "+---------------------------+\n";
+        resetColor();
 
+        setColor(14);
         cout << "ID: ";
-        cin >> id;
+        resetColor();
+        while (!readInt(id))
+        {
+            setColor(14);
+            cout << "ID: ";
+            resetColor();
+        }
+
+        setColor(14);
         cout << "Name: ";
+        resetColor();
         cin >> name;
+
+        setColor(14);
         cout << "Age: ";
-        cin >> age;
+        resetColor();
+        while (!readInt(age))
+        {
+            setColor(14);
+            cout << "Age: ";
+            resetColor();
+        }
+
+        setColor(14);
         cout << "Salary: ";
-        cin >> salary;
+        resetColor();
+        {
+            string s;
+            while (true)
+            {
+                cin >> s;
+                bool valid = true, hasDot = false;
+                for (char c : s)
+                {
+                    if (c == '.' && !hasDot)
+                    {
+                        hasDot = true;
+                        continue;
+                    }
+                    if (!isdigit(c))
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid && !s.empty())
+                {
+                    salary = stof(s);
+                    break;
+                }
+                setColor(12);
+                cout << "\n  ⚠️  Invalid input! Please enter a NUMBER for salary.\n";
+                resetColor();
+                setColor(14);
+                cout << "Salary: ";
+                resetColor();
+            }
+        }
     }
 
     /* ================= Vichhet - Update worker ================= */
     void update()
     {
+        setColor(13);
         cout << "\n+---------------------------+\n";
         cout << "|     UPDATE WORKER        |\n";
         cout << "+---------------------------+\n";
+        resetColor();
 
+        setColor(14);
         cout << "New Name: ";
+        resetColor();
         cin >> name;
+
+        setColor(14);
         cout << "New Age: ";
-        cin >> age;
+        resetColor();
+        while (!readInt(age))
+        {
+            setColor(14);
+            cout << "New Age: ";
+            resetColor();
+        }
+
+        setColor(14);
         cout << "New Salary: ";
-        cin >> salary;
+        resetColor();
+        {
+            string s;
+            while (true)
+            {
+                cin >> s;
+                bool valid = true, hasDot = false;
+                for (char c : s)
+                {
+                    if (c == '.' && !hasDot)
+                    {
+                        hasDot = true;
+                        continue;
+                    }
+                    if (!isdigit(c))
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid && !s.empty())
+                {
+                    salary = stof(s);
+                    break;
+                }
+                setColor(12);
+                cout << "\n  ⚠️  Invalid input! Please enter a NUMBER for salary.\n";
+                resetColor();
+                setColor(14);
+                cout << "New Salary: ";
+                resetColor();
+            }
+        }
     }
 
     // Setter methods
@@ -78,7 +222,6 @@ void exportExcel(vector<Worker> &workers)
     ws.cell("D1").value("Salary");
 
     int r = 2;
-
     for (int i = 0; i < workers.size(); i++)
     {
         ws.cell("A" + to_string(r)).value(workers[i].getId());
@@ -87,7 +230,6 @@ void exportExcel(vector<Worker> &workers)
         ws.cell("D" + to_string(r)).value(to_string((int)workers[i].getSalary()) + "$");
         r++;
     }
-
     wb.save("workersdata.xlsx");
 }
 
@@ -95,45 +237,27 @@ void exportExcel(vector<Worker> &workers)
 void sortByIdAsc(vector<Worker> &w)
 {
     for (int i = 0; i < w.size(); i++)
-    {
         for (int j = i + 1; j < w.size(); j++)
-        {
             if (w[i].getId() > w[j].getId())
-            {
                 swap(w[i], w[j]);
-            }
-        }
-    }
 }
 
 /* ================= Dy sorint - Show data as table (salary-low-high) ================= */
 void sortSalaryLowHigh(vector<Worker> &w)
 {
     for (int i = 0; i < w.size(); i++)
-    {
         for (int j = i + 1; j < w.size(); j++)
-        {
             if (w[i].getSalary() > w[j].getSalary())
-            {
                 swap(w[i], w[j]);
-            }
-        }
-    }
 }
 
 /* ================= Dy sorint - Show data as table (salary-high-low) ================= */
 void sortSalaryHighLow(vector<Worker> &w)
 {
     for (int i = 0; i < w.size(); i++)
-    {
         for (int j = i + 1; j < w.size(); j++)
-        {
             if (w[i].getSalary() < w[j].getSalary())
-            {
                 swap(w[i], w[j]);
-            }
-        }
-    }
 }
 
 /* ================= TABLE ================= */
@@ -142,13 +266,14 @@ void showTable(vector<Worker> &list)
 {
     if (list.size() == 0)
     {
-        cout << "\nℹ️ No worker data found!\n";
+        setColor(12);
+        cout << "\nNo worker data found!\n";
+        resetColor();
         return;
     }
 
     Table t;
     t.add_row({"ID", "Name", "Age", "Salary"});
-
     for (int i = 0; i < list.size(); i++)
     {
         t.add_row({to_string(list[i].getId()),
@@ -157,7 +282,9 @@ void showTable(vector<Worker> &list)
                    to_string((int)list[i].getSalary()) + "$"});
     }
 
+    setColor(11);
     cout << t << endl;
+    resetColor();
 }
 
 /* ================= SEARCH ================= */
@@ -165,13 +292,14 @@ void showSearchTable(vector<Worker> result)
 {
     if (result.size() == 0)
     {
-        cout << "\n❌ No data found!\n";
+        setColor(12);
+        cout << "\n No data found!\n";
+        resetColor();
         return;
     }
 
     Table t;
     t.add_row({"ID", "Name", "Age", "Salary"});
-
     for (int i = 0; i < result.size(); i++)
     {
         t.add_row({to_string(result[i].getId()),
@@ -180,7 +308,9 @@ void showSearchTable(vector<Worker> result)
                    to_string((int)result[i].getSalary()) + "$"});
     }
 
+    setColor(10);
     cout << t << endl;
+    resetColor();
 }
 
 /* ================= REGISTRATION ================= */
@@ -189,29 +319,35 @@ void registerNewUser()
 {
     string username, password, roleInput, role;
 
+    setColor(13);
     cout << "\n+---------------------------+\n";
     cout << "|      REGISTRATION        |\n";
     cout << "+---------------------------+\n";
+    resetColor();
 
+    setColor(14);
     cout << "Username: ";
+    resetColor();
     cin >> username;
+    setColor(14);
     cout << "Password: ";
+    resetColor();
     cin >> password;
 
-    cout << "Role: \n1. 🔐 Admin  \n2. 👷Worker ";
+    setColor(14);
+    cout << "Role: \n1. Admin  \n2. Worker ";
+    resetColor();
     cin >> roleInput;
 
     if (roleInput == "1" || roleInput == "admin")
-    {
         role = "admin";
-    }
     else if (roleInput == "2" || roleInput == "worker")
-    {
         role = "worker";
-    }
     else
     {
-        cout << "\n❌ Invalid role selection!\n";
+        setColor(12);
+        cout << "\n  ⚠️  Invalid role selection! Please enter 1 or 2.\n";
+        resetColor();
         return;
     }
 
@@ -219,49 +355,56 @@ void registerNewUser()
 }
 
 /* ================= LOGIN(UNIFIED LOGIN)  ================= */
-             
 /* ================= Phanet - Login ================= */
 pair<bool, string> login()
 {
     string u, p;
 
-    cout << "\n🔐 LOGIN\n";
+    setColor(9);
+    cout << "\n LOGIN\n";
+    resetColor();
+
+    setColor(14);
     cout << "Username: ";
+    resetColor();
     cin >> u;
+    setColor(14);
     cout << "Password: ";
+    resetColor();
     cin >> p;
 
     string role = UserManager::loginUser(u, p);
 
     if (!role.empty())
     {
+        setColor(10);
         if (role == "admin")
-        {
-            cout << "\n✅ Login successfully (Admin)\n";
-        }
+            cout << "\n Login successfully (Admin)\n";
         else if (role == "worker")
-        {
-            cout << "\n✅ Login successfully (Worker)\n";
-        }
+            cout << "\n Login successfully (Worker)\n";
+        resetColor();
         return {true, role};
     }
 
-    cout << "\n❌ Error ! Wrong username or Password ! Try login again later\n";
+    setColor(12);
+    cout << "\n Error ! Wrong username or Password ! Try login again later\n";
+    resetColor();
     return {false, ""};
 }
 
 /* ================= WORKER PAGE ================= */
 void workerPage()
 {
+    setColor(6);
     cout << "\n====================================\n";
-    cout << "👷 WORKER MODE (VIEW ONLY)\n";
+    cout << " WORKER MODE (VIEW ONLY)\n";
     cout << "====================================\n";
+    resetColor();
 }
 
 /* ================= LOAD WORKERS FROM EXCEL ================= */
 #include <xlnt/xlnt.hpp>
 
-/* ================= LOAD WORKERS FROM EXCEL ================= */
 void loadWorkersFromExcel(vector<Worker> &workers)
 {
     workers.clear();
@@ -284,11 +427,10 @@ void loadWorkersFromExcel(vector<Worker> &workers)
         if (firstRow)
         {
             firstRow = false;
-            continue; 
+            continue;
         }
         try
         {
-            
             int id = row[0].value<int>();
             std::string name = row[1].to_string();
             int age = row[2].value<int>();
@@ -307,7 +449,6 @@ void loadWorkersFromExcel(vector<Worker> &workers)
         }
         catch (const std::exception &e)
         {
-            
             std::cerr << "Row parsing error: " << e.what() << std::endl;
             continue;
         }
@@ -317,25 +458,41 @@ void loadWorkersFromExcel(vector<Worker> &workers)
 /* ================= MENU ================= */
 void menu()
 {
+    setColor(9);
     cout << "\n====================================\n";
+    setColor(15);
     cout << "         WORKER DASHBOARD          \n";
+    setColor(9);
     cout << "====================================\n";
+    resetColor();
+
+    setColor(10);
     cout << " 1. ➕ Add Worker\n";
+    setColor(13);
     cout << " 2. 📝 Update Worker\n";
+    setColor(11);
     cout << " 3. 📃 Show All Workers\n";
-    cout << " 4. 🗑️ Delete Worker\n";
+    setColor(12);
+    cout << " 4. 🗑️  Delete Worker\n";
+    setColor(14);
     cout << " 5. 🔎 Search Worker\n";
+    setColor(1);
     cout << " 6. 🚪 Logout\n";
-    cout << " 7. ❌Exit\n";
+    setColor(4);
+    cout << " 7. ❌ Exit\n";
+    setColor(9);
     cout << "====================================\n";
+    resetColor();
+
+    setColor(15);
     cout << " Choose: ";
+    resetColor();
 }
 
 /* ================= MAIN ================= */
 int main()
 {
     system("cls");
-    // show emoji configuration for windows console
     SetConsoleCP(65001);
     SetConsoleOutputCP(65001);
     vector<Worker> workers;
@@ -350,15 +507,30 @@ int main()
         /* ================= LOGIN SYSTEM ================= */
         while (!loginSuccess)
         {
+            setColor(9);
             cout << "\n====================================\n";
+            setColor(15);
             cout << "       USER AUTHENTICATION          \n";
+            setColor(9);
             cout << "====================================\n";
+            resetColor();
+
+            setColor(10);
             cout << " 1. Register 📝\n";
+            setColor(11);
             cout << " 2. Login 🔐\n";
+            setColor(12);
             cout << " 3. Exit ❌\n";
+            setColor(9);
             cout << "====================================\n";
+            resetColor();
+
+            setColor(15);
             cout << " Choose: ";
-            cin >> option;
+            resetColor();
+
+            if (!readInt(option))
+                continue; // ← catches letters here
 
             if (option == 1)
             {
@@ -370,28 +542,29 @@ int main()
                 if (success)
                 {
                     if (role == "admin")
-                    {
                         isAdmin = true;
-                    }
                     else
                     {
                         isAdmin = false;
                         workerPage();
                     }
-                    // Load persisted workers from Excel file
                     loadWorkersFromExcel(workers);
                     loginSuccess = true;
                 }
             }
             else if (option == 3)
             {
-                cout << "\n👋 Goodbye!\n";
+                setColor(6);
+                cout << "\n 👋 Goodbye!\n";
+                resetColor();
                 runProgram = false;
                 loginSuccess = true;
             }
             else
             {
-                cout << "\n❌ Invalid option (choose 1, 2, or 3)\n";
+                setColor(12);
+                cout << "\n  ⚠️  Invalid option! Please choose 1, 2, or 3.\n";
+                resetColor();
             }
         }
 
@@ -401,11 +574,18 @@ int main()
         do
         {
             menu();
-            cin >> op;
+
+            if (!readInt(op))
+            {
+                op = -1;
+                continue;
+            } // ← catches letters here
 
             if (!isAdmin && (op == 1 || op == 2 || op == 4))
             {
-                cout << "\n❌ Admin only feature!\n";
+                setColor(12);
+                cout << "\n  🚫 Admin only feature!\n";
+                resetColor();
                 continue;
             }
 
@@ -420,21 +600,25 @@ int main()
                 {
                     if (workers[i].getId() == w.getId() || workers[i].getName() == w.getName())
                     {
-                        duplicate = true; 
+                        duplicate = true;
                         break;
                     }
                 }
                 if (duplicate)
                 {
-                    cout << "\n❌ Failed to add: Worker with the same ID or Name already exists!\n";
+                    setColor(12);
+                    cout << "\n  ❌ Failed to add: Worker with the same ID or Name already exists!\n";
+                    resetColor();
                 }
                 else
                 {
-                    workers.push_back(w); 
-                    exportExcel(workers); 
-                    cout << "\n✅ Added successfully!\n";
-                    cout << "ID: " << w.getId() << " | Name: " << w.getName()
+                    workers.push_back(w);
+                    exportExcel(workers);
+                    setColor(10);
+                    cout << "\n  ✅ Added successfully!\n";
+                    cout << "  ID: " << w.getId() << " | Name: " << w.getName()
                          << " | Age: " << w.getAge() << " | Salary: " << (int)w.getSalary() << "$\n";
+                    resetColor();
                 }
                 break;
             }
@@ -442,8 +626,11 @@ int main()
             case 2:
             {
                 int id, found = 0;
+                setColor(14);
                 cout << "Enter ID: ";
-                cin >> id;
+                resetColor();
+                if (!readInt(id))
+                    break; // ← catches letters here
 
                 for (int i = 0; i < workers.size(); i++)
                 {
@@ -451,16 +638,18 @@ int main()
                     {
                         workers[i].update();
                         exportExcel(workers);
-                        cout << "\n✅ Updated successfully!\n";
+                        setColor(10);
+                        cout << "\n  ✅ Updated successfully!\n";
+                        resetColor();
                         found = 1;
                     }
                 }
-
                 if (!found)
                 {
-                    cout << "\n❌ No data found!\n";
+                    setColor(12);
+                    cout << "\n  ❌ No data found!\n";
+                    resetColor();
                 }
-
                 break;
             }
 
@@ -468,31 +657,41 @@ int main()
             {
                 int choice;
 
+                setColor(11);
                 cout << "\n====================================\n";
                 cout << " SHOW ALL WORKERS\n";
                 cout << "====================================\n";
+                resetColor();
+
+                setColor(7);
                 cout << " 1. Default (By ID)\n";
-                cout << " 2. Salary Low → High\n";
-                cout << " 3. Salary High → Low\n";
+                setColor(10);
+                cout << " 2. Salary Low to High\n";
+                setColor(12);
+                cout << " 3. Salary High to Low\n";
+                setColor(11);
                 cout << "====================================\n";
+                resetColor();
+
+                setColor(15);
                 cout << " Choose: ";
-                cin >> choice;
+                resetColor();
+
+                if (!readInt(choice))
+                    break; // ← catches letters here
 
                 if (choice == 1)
-                {
                     sortByIdAsc(workers);
-                }
                 else if (choice == 2)
-                {
                     sortSalaryLowHigh(workers);
-                }
                 else if (choice == 3)
-                {
                     sortSalaryHighLow(workers);
-                }
                 else
                 {
-                    cout << "\n❌ Invalid option, showing default\n";
+                    setColor(12);
+                    cout << "\n  ⚠️  Invalid option, showing default.\n";
+                    resetColor();
+                    sortByIdAsc(workers);
                 }
 
                 showTable(workers);
@@ -503,8 +702,11 @@ int main()
             {
                 /* ================= Dararithy - Delete Worker ================= */
                 int id, found = 0;
+                setColor(12);
                 cout << "Delete ID: ";
-                cin >> id;
+                resetColor();
+                if (!readInt(id))
+                    break; // ← catches letters here
 
                 for (int i = 0; i < workers.size(); i++)
                 {
@@ -512,17 +714,19 @@ int main()
                     {
                         workers.erase(workers.begin() + i);
                         exportExcel(workers);
-                        cout << "\n✅ Deleted successfully!\n";
+                        setColor(10);
+                        cout << "\n  ✅ Deleted successfully!\n";
+                        resetColor();
                         found = 1;
                         break;
                     }
                 }
-
                 if (!found)
                 {
-                    cout << "\n❌ No data found!\n";
+                    setColor(12);
+                    cout << "\n  ❌ No data found!\n";
+                    resetColor();
                 }
-
                 break;
             }
 
@@ -532,47 +736,53 @@ int main()
                 vector<Worker> result;
                 int c;
 
+                setColor(14);
                 cout << "Search \n1.By ID \n2.By Name \n3.By Age: ";
-                cin >> c;
+                resetColor();
+                if (!readInt(c))
+                    break; // ← catches letters here
 
                 if (c == 1)
                 {
                     int id;
-                    cin >> id;
-
+                    setColor(14);
+                    cout << "Enter ID: ";
+                    resetColor();
+                    if (!readInt(id))
+                        break; // ← catches letters here
                     for (auto &w : workers)
-                    {
                         if (w.getId() == id)
-                        {
                             result.push_back(w);
-                        }
-                    }
                 }
                 else if (c == 2)
                 {
                     string n;
+                    setColor(14);
+                    cout << "Enter Name: ";
+                    resetColor();
                     cin >> n;
-
                     for (auto &w : workers)
-                    {
                         if (w.getName() == n)
-                        {
                             result.push_back(w);
-                        }
-                    }
                 }
                 else if (c == 3)
                 {
                     int age;
-                    cin >> age;
-
+                    setColor(14);
+                    cout << "Enter Age: ";
+                    resetColor();
+                    if (!readInt(age))
+                        break; // ← catches letters here
                     for (auto &w : workers)
-                    {
                         if (w.getAge() == age)
-                        {
                             result.push_back(w);
-                        }
-                    }
+                }
+                else
+                {
+                    setColor(12);
+                    cout << "\n  ⚠️  Invalid search option!\n";
+                    resetColor();
+                    break;
                 }
 
                 showSearchTable(result);
@@ -582,19 +792,25 @@ int main()
             case 6:
             {
                 /* ================= Phanet - Logout ================= */
-                cout << "\n✅ Logout successful! Returning to login page...\n";
+                setColor(10);
+                cout << "\n  ✅ Logout successful! Returning to login page...\n";
+                resetColor();
                 break;
             }
 
             case 7:
             {
-                cout << "\n👋 Goodbye!\n";
+                setColor(6);
+                cout << "\n 👋 Goodbye!\n";
+                resetColor();
                 runProgram = false;
                 break;
             }
 
             default:
-                cout << "\n❌ Invalid option\n";
+                setColor(12);
+                cout << "\n  ⚠️  Invalid option! Please enter a number from the menu.\n";
+                resetColor();
             }
 
         } while (op != 6 && op != 7);

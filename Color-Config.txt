@@ -1,0 +1,4 @@
+// Windows console color codes:
+// 0=Black, 1=Blue, 2=Green, 3=Cyan, 4=Red, 5=Magenta
+// 6=Yellow, 7=White, 9=BrightBlue, 10=BrightGreen
+// 11=BrightCyan, 12=BrightRed, 13=BrightMagenta, 14=BrightYellow, 15=BrightWhite
