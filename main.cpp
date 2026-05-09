@@ -416,7 +416,7 @@ void loadWorkersFromExcel(vector<Worker> &workers)
     }
     catch (const std::exception &e)
     {
-        std::cerr << "Failed to load Excel file: " << e.what() << std::endl;
+        //std::cerr << "Failed to load Excel file: " << e.what() << std::endl;
         return;
     }
 
