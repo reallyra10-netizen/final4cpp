@@ -568,6 +568,9 @@ int main()
             }
         }
 
+        /* ================= FIX: Skip menu if user chose Exit ================= */
+        if (!runProgram) break;
+
         int op;
 
         /* ================= MENU LOOP ================= */
