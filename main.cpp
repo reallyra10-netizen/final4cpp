@@ -10,9 +10,8 @@
 using namespace std;
 using namespace tabulate;
 
-/* ════════════════════════════════════════════════════
-   CONSOLE SETUP & COLOR
-   ════════════════════════════════════════════════════ */
+//CONSOLE SETUP & COLOR
+  
 HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
 void setColor(int c) { SetConsoleTextAttribute(hCon, c); }
 void resetColor()    { SetConsoleTextAttribute(hCon, 7); }
@@ -36,27 +35,15 @@ void setupConsole()
     SetConsoleOutputCP(65001);
 }
 
-/* ════════════════════════════════════════════════════
-   DESIGN CONSTANTS  (72-col layout)
-   ════════════════════════════════════════════════════
-   Outer box: 72 cols wide
-   ╔══════════════════════════════════════════════════════════════════════╗
-   ║                         TITLE HERE                                  ║
-   ╠══════════════════════════════════════════════════════════════════════╣
-   ║  content                                                            ║
-   ╚══════════════════════════════════════════════════════════════════════╝
-*/
 
-// Inner content width = 68 chars (between the two ║ chars)
+ 
 const int IW = 68;
 
-// Border chars (UTF-8, Windows console with UTF-8 codepage)
 const string TL="╔", TR="╗", BL="╚", BR="╝";
 const string H ="═", V ="║";
 const string ML="╠", MR="╣";
-const string SL="╟", SR="╢", SH="─"; // section divider
+const string SL="╟", SR="╢", SH="─";
 
-// Build a horizontal run of W copies of s
 string rep(const string &s, int w)
 {
     string r; r.reserve(w * s.size());
@@ -64,7 +51,6 @@ string rep(const string &s, int w)
     return r;
 }
 
-// Center a string inside width w (space-padded)
 string center(const string &s, int w)
 {
     int len = (int)s.size();
@@ -73,7 +59,6 @@ string center(const string &s, int w)
     return string(l, ' ') + s + string(r, ' ');
 }
 
-// Left-align inside width w
 string left_pad(const string &s, int w)
 {
     int len = (int)s.size();
@@ -81,11 +66,8 @@ string left_pad(const string &s, int w)
     return s + string(w - len, ' ');
 }
 
-/* ════════════════════════════════════════════════════
-   FAST ANIMATION PRIMITIVES  (all delays halved)
-   ════════════════════════════════════════════════════ */
 
-// Type text fast
+   //ANIMATION PRIMITIVES
 void typeText(const string &t, int color, int delay = 8)
 {
     setColor(color);
@@ -93,7 +75,7 @@ void typeText(const string &t, int color, int delay = 8)
     resetColor();
 }
 
-// Animate a line drawing char by char (very fast)
+
 void animStr(const string &s, int color, int delay = 2)
 {
     setColor(color);
@@ -107,7 +89,7 @@ void put(const string &s, int color)
     setColor(color); cout << s; resetColor();
 }
 
-// Fast progress bar
+
 void progressBar(int color, int steps = 28, int delay = 12)
 {
     put("  [", 8);
@@ -125,7 +107,7 @@ void progressBar(int color, int steps = 28, int delay = 12)
     cout << "\n";
 }
 
-// Fast spinner
+
 void spinner(const string &label, int color, int dur = 400)
 {
     const char fr[] = {'|','/','-','\\'};
@@ -139,7 +121,7 @@ void spinner(const string &label, int color, int dur = 400)
     cout << "\r" << string(50,' ') << "\r";
 }
 
-// Pulse effect (success/error)
+
 void pulse(const string &msg, int color, int times = 2)
 {
     for (int i = 0; i < times; i++)
@@ -151,41 +133,28 @@ void pulse(const string &msg, int color, int times = 2)
     setColor(color); cout << "\r  " << msg << "\n"; resetColor();
 }
 
-/* ════════════════════════════════════════════════════
-   BOX DRAWING  (animated)
-   ════════════════════════════════════════════════════ */
-
-// Top border:   ╔══════...══╗
-void drawTop(int borderColor, int delay = 1)
+   //BOX 
+void drawTop(int borderColor, int delay = 0)
 {
     setColor(borderColor);
-    cout << TL;
-    for (int i = 0; i < IW+2; i++) { cout << H; cout.flush(); ms(delay); }
-    cout << TR << "\n";
+    cout << TL << rep(H, IW+2) << TR << "\n";
     resetColor();
 }
 
-// Bottom border: ╚══════...══╝
-void drawBot(int borderColor, int delay = 1)
+void drawBot(int borderColor, int delay = 0)
 {
     setColor(borderColor);
-    cout << BL;
-    for (int i = 0; i < IW+2; i++) { cout << H; cout.flush(); ms(delay); }
-    cout << BR << "\n";
+    cout << BL << rep(H, IW+2) << BR << "\n";
     resetColor();
 }
 
-// Mid divider:  ╠══════...══╣
-void drawMid(int borderColor, int delay = 1)
+void drawMid(int borderColor, int delay = 0)
 {
     setColor(borderColor);
-    cout << ML;
-    for (int i = 0; i < IW+2; i++) { cout << H; cout.flush(); ms(delay); }
-    cout << MR << "\n";
+    cout << ML << rep(H, IW+2) << MR << "\n";
     resetColor();
 }
 
-// Thin section divider: ╟──────...──╢
 void drawSep(int borderColor)
 {
     setColor(borderColor);
@@ -193,7 +162,6 @@ void drawSep(int borderColor)
     resetColor();
 }
 
-// Content row:  ║  <content padded to IW>  ║
 void row(const string &content, int borderColor, int textColor, bool centered = false)
 {
     string padded = centered ? center(content, IW) : left_pad(" "+content, IW);
@@ -203,7 +171,6 @@ void row(const string &content, int borderColor, int textColor, bool centered = 
     resetColor();
 }
 
-// Empty row
 void rowEmpty(int borderColor)
 {
     setColor(borderColor);
@@ -211,41 +178,35 @@ void rowEmpty(int borderColor)
     resetColor();
 }
 
-// Full page header box (animated)
+// Page header 
 void pageHeader(const string &title, int borderColor, int titleColor)
 {
     cout << "\n";
-    drawTop(borderColor, 1);
+    drawTop(borderColor);
     row(title, borderColor, titleColor, true);
-    drawMid(borderColor, 1);
+    drawMid(borderColor);
     cout << "\n";
 }
 
-// Close box
 void pageFooter(int borderColor)
 {
     cout << "\n";
-    drawBot(borderColor, 1);
+    drawBot(borderColor);
 }
 
-/* ════════════════════════════════════════════════════
-   MENU ROW  (animated, slides in)
-   ════════════════════════════════════════════════════ */
-void menuRow(const string &text, int borderColor, int textColor, int delay = 30)
+/*  MENU ROW  */
+void menuRow(const string &text, int borderColor, int textColor, int delay = 0)
 {
-    ms(delay);
     row(text, borderColor, textColor);
 }
 
-/* ════════════════════════════════════════════════════
-   SUCCESS / ERROR  MESSAGES
-   ════════════════════════════════════════════════════ */
+
+//SUCCESS 
+  
 void animSuccess(const string &msg) { cout << "\n"; pulse("  OK  " + msg, 10); }
 void animError(const string &msg)   { cout << "\n"; pulse("  !!  " + msg, 12); }
 
-/* ════════════════════════════════════════════════════
-   INPUT VALIDATOR
-   ════════════════════════════════════════════════════ */
+//INPUT VALIDATOR
 bool readInt(int &out)
 {
     string inp; cin >> inp;
@@ -259,9 +220,7 @@ bool readInt(int &out)
     catch (...) { animError("Number out of range."); return false; }
 }
 
-/* ════════════════════════════════════════════════════
-   WORKER CLASS
-   ════════════════════════════════════════════════════ */
+//   WORKER CLASS
 class Worker
 {
     int id; string name; int age; float salary;
@@ -326,9 +285,7 @@ public:
     float  getSalary() { return salary; }
 };
 
-/* ════════════════════════════════════════════════════
-   EXCEL
-   ════════════════════════════════════════════════════ */
+// Ecxel Stylee
 void exportExcel(vector<Worker> &w)
 {
     spinner("Saving to Excel ...", 11, 350);
@@ -370,9 +327,7 @@ void loadWorkersFromExcel(vector<Worker> &workers)
     }
 }
 
-/* ════════════════════════════════════════════════════
-   SORT
-   ════════════════════════════════════════════════════ */
+//Sort
 void sortId(vector<Worker> &w)
 { for(int i=0;i<(int)w.size();i++) for(int j=i+1;j<(int)w.size();j++) if(w[i].getId()>w[j].getId()) swap(w[i],w[j]); }
 
@@ -384,10 +339,7 @@ void sortLow(vector<Worker> &w)
 void sortHigh(vector<Worker> &w)
 { for(int i=0;i<(int)w.size();i++) for(int j=i+1;j<(int)w.size();j++) if(w[i].getSalary()<w[j].getSalary()) swap(w[i],w[j]); }
 
-/* ════════════════════════════════════════════════════
-   TABLE DISPLAY  (row-by-row reveal)
-   ════════════════════════════════════════════════════ */
-/* ===== Kun sokea — show table ===== */
+//Show as table
 void showTable(vector<Worker> &list, int borderColor)
 {
     if (list.empty()) { animError("No worker data found!"); return; }
@@ -405,7 +357,7 @@ void showTable(vector<Worker> &list, int borderColor)
     {
         setColor(ln==1 ? 14 : (ln%2==0 ? 7 : 15));
         cout << "  " << line << "\n";
-        resetColor(); cout.flush(); ms(18);
+        resetColor();
         ln++;
     }
     cout << "\n";
@@ -428,15 +380,13 @@ void showSearchTable(vector<Worker> result)
     {
         setColor(ln==1 ? 10 : 7);
         cout << "  " << line << "\n";
-        resetColor(); cout.flush(); ms(18);
+        resetColor();
         ln++;
     }
     cout << "\n";
 }
 
-/* ════════════════════════════════════════════════════
-   WAIT FOR ENTER
-   ════════════════════════════════════════════════════ */
+
 void waitEnter()
 {
     cout << "\n";
@@ -444,19 +394,17 @@ void waitEnter()
     cin.ignore(1000,'\n'); cin.get();
 }
 
-/* ════════════════════════════════════════════════════
-   WELCOME SCREEN
-   ════════════════════════════════════════════════════ */
+
 void welcomeScreen()
 {
     cls(); hideCursor();
 
-    // Top decorative bar
+   
     setColor(9);
     for (int i=0;i<72;i++){ cout<<"═"; cout.flush(); ms(2); }
     cout<<"\n"; resetColor();
 
-    // ASCII logo typed fast
+
     const string logo[] = {
         "",
         "     __        ______  ____  _  _______ ____  ",
@@ -471,14 +419,13 @@ void welcomeScreen()
     int lc[] = {0,11,11,14,14,9,0,15,0};
     for (int i=0;i<9;i++) typeText(logo[i]+"\n", lc[i], 4);
 
-    // Bottom decorative bar
     setColor(9);
     for (int i=0;i<72;i++){ cout<<"═"; cout.flush(); ms(2); }
     cout<<"\n\n"; resetColor();
 
-    // Tagline slide
+    
     setColor(8); cout<<"  "; resetColor();
-    typeText("Efficient  |  Reliable  |  Excel-Ready\n", 7, 10);
+    typeText(" Institute of Science and Technology Advanced Development | Group 1\n", 7, 10);
 
     cout<<"\n";
     setColor(11); cout<<"  Loading "; resetColor();
@@ -503,12 +450,12 @@ void printAuthMenu()
 {
     cls();
     pageHeader("USER AUTHENTICATION", 9, 15);
-    menuRow("",                         9, 7,  0);
-    menuRow("[1]  Register",            9, 10, 35);
-    menuRow("[2]  Login",               9, 11, 35);
-    menuRow("[3]  Exit",                9, 12, 35);
-    menuRow("",                         9, 7,  0);
-    drawBot(9, 1);
+    menuRow("",            9, 7);
+    menuRow("[1]  Register", 9, 10);
+    menuRow("[2]  Login",    9, 11);
+    menuRow("[3]  Exit",     9, 12);
+    menuRow("",            9, 7);
+    drawBot(9);
     cout<<"\n"; setColor(15); cout<<"  >> Choose: "; resetColor();
 }
 
@@ -525,19 +472,32 @@ void registerNewUser()
     setColor(14); cout<<"\n  Password : "; resetColor(); cin>>p;
 
     cout<<"\n";
-    menuRow("[1]  Admin",  13, 10, 30);
-    menuRow("[2]  Worker", 13, 11, 30);
+    menuRow("[1]  Admin",  13, 10);
+    menuRow("[2]  Worker", 13, 11);
     cout<<"\n"; setColor(15); cout<<"  >> Role: "; resetColor();
     cin>>ri;
 
     if      (ri=="1"||ri=="admin")  role="admin";
     else if (ri=="2"||ri=="worker") role="worker";
-    else { animError("Invalid role! Enter 1 or 2."); return; }
+    else
+    {
+        animError("Invalid role! Enter 1 or 2.");
+        waitEnter();
+        return;
+    }
 
     spinner("Creating account ...", 13, 400);
-    UserManager::registerUser(u, p, role);
-    animSuccess("Account created!");
+    bool ok = UserManager::registerUser(u, p, role);
+    if (ok)
+    {
+        animSuccess("Account created!");
+    }
+    else
+    {
+        animError("Account creation failed! Username already exists.");
+    }
     ms(400);
+    waitEnter();
 }
 
 /* ════════════════════════════════════════════════════
@@ -563,6 +523,7 @@ pair<bool,string> login()
     }
     animError("Wrong username or password.");
     ms(400);
+    waitEnter();
     return {false,""};
 }
 
@@ -573,13 +534,13 @@ void workerPage()
 {
     cls();
     pageHeader("WORKER MODE — VIEW ONLY", 6, 15);
-    menuRow("",                                          6, 7, 0);
-    menuRow("You are logged in as:  WORKER",            6, 6, 30);
-    menuRow("View and Search are available to you.",    6, 7, 30);
-    menuRow("Add / Update / Delete require Admin.",     6, 8, 30);
-    menuRow("",                                          6, 7, 0);
-    drawBot(6,1);
-    ms(700);
+    menuRow("",                                          6, 7);
+    menuRow("You are logged in as:  WORKER",            6, 6);
+    menuRow("View and Search are available to you.",    6, 7);
+    menuRow("Add / Update / Delete require Admin.",     6, 8);
+    menuRow("",                                          6, 7);
+    drawBot(6);
+    waitEnter();
 }
 
 /* ════════════════════════════════════════════════════
@@ -592,26 +553,26 @@ void printMainMenu(bool isAdmin)
 
     if (isAdmin)
     {
-        menuRow("[1]  Add Worker",    9, 10, 30);
-        menuRow("[2]  Update Worker", 9, 13, 30);
-        menuRow("[3]  Show All",      9, 11, 30);
-        menuRow("[4]  Delete Worker", 9, 12, 30);
-        menuRow("[5]  Search Worker", 9, 14, 30);
-        menuRow("[6]  Logout",        9,  1, 30);
-        menuRow("[7]  Exit",          9,  4, 30);
+        menuRow("[1]  Add Worker",    9, 10);
+        menuRow("[2]  Update Worker", 9, 13);
+        menuRow("[3]  Show All",      9, 11);
+        menuRow("[4]  Delete Worker", 9, 12);
+        menuRow("[5]  Search Worker", 9, 14);
+        menuRow("[6]  Logout",        9,  1);
+        menuRow("[7]  Exit",          9,  4);
     }
     else
     {
-        menuRow("[1]  Add Worker     (Admin only)", 9, 8, 30);
-        menuRow("[2]  Update Worker  (Admin only)", 9, 8, 30);
-        menuRow("[3]  Show All",                   9,11, 30);
-        menuRow("[4]  Delete Worker  (Admin only)", 9, 8, 30);
-        menuRow("[5]  Search Worker",              9,14, 30);
-        menuRow("[6]  Logout",                     9, 1, 30);
-        menuRow("[7]  Exit",                       9, 4, 30);
+        menuRow("[1]  Add Worker     (Admin only)", 9, 8);
+        menuRow("[2]  Update Worker  (Admin only)", 9, 8);
+        menuRow("[3]  Show All",                   9,11);
+        menuRow("[4]  Delete Worker  (Admin only)", 9, 8);
+        menuRow("[5]  Search Worker",              9,14);
+        menuRow("[6]  Logout",                     9, 1);
+        menuRow("[7]  Exit",                       9, 4);
     }
 
-    drawBot(9,1);
+    drawBot(9);
     cout<<"\n"; setColor(15); cout<<"  >> Choose: "; resetColor();
 }
 
@@ -622,10 +583,10 @@ void showSortMenu()
 {
     cls();
     pageHeader("SHOW ALL WORKERS — SORT BY", 11, 15);
-    menuRow("[1]  Default (by ID)",     11,  7, 30);
-    menuRow("[2]  Salary: Low to High", 11, 10, 30);
-    menuRow("[3]  Salary: High to Low", 11, 12, 30);
-    drawBot(11,1);
+    menuRow("[1]  Default (by ID)",     11,  7);
+    menuRow("[2]  Salary: Low to High", 11, 10);
+    menuRow("[3]  Salary: High to Low", 11, 12);
+    drawBot(11);
     cout<<"\n"; setColor(15); cout<<"  >> Choose: "; resetColor();
 }
 
@@ -636,15 +597,15 @@ void showSearchMenu()
 {
     cls();
     pageHeader("SEARCH WORKERS", 14, 15);
-    menuRow("[1]  By ID",   14, 7, 30);
-    menuRow("[2]  By Name", 14, 7, 30);
-    menuRow("[3]  By Age",  14, 7, 30);
-    drawBot(14,1);
+    menuRow("[1]  By ID",   14, 7);
+    menuRow("[2]  By Name", 14, 7);
+    menuRow("[3]  By Age",  14, 7);
+    drawBot(14);
     cout<<"\n"; setColor(15); cout<<"  >> Choose: "; resetColor();
 }
 
 /* ════════════════════════════════════════════════════
-   GOODBYE SCREEN
+   GOODBYE SCREEN  — ORIGINAL (unchanged)
    ════════════════════════════════════════════════════ */
 void goodbyeScreen()
 {
@@ -654,7 +615,7 @@ void goodbyeScreen()
     row("Thank you for using Worker Console!", 6, 14, true);
     row("Have a great day!",                  6,  7, true);
     rowEmpty(6);
-    drawBot(6,1);
+    drawBot(6);
     cout<<"\n";
     ms(700);
 }
@@ -679,7 +640,7 @@ int main()
         while (!loggedIn)
         {
             printAuthMenu();
-            if (!readInt(option)) continue;
+            if (!readInt(option)) { waitEnter(); continue; }
 
             if (option == 1)
             {
@@ -701,7 +662,11 @@ int main()
                 goodbyeScreen();
                 run = false; loggedIn = true;
             }
-            else animError("Invalid option! Choose 1, 2, or 3.");
+            else
+            {
+                animError("Invalid option! Choose 1, 2, or 3.");
+                waitEnter();
+            }
         }
 
         if (!run) break;
@@ -712,7 +677,7 @@ int main()
         do
         {
             printMainMenu(isAdmin);
-            if (!readInt(op)) { op=-1; continue; }
+            if (!readInt(op)) { waitEnter(); op=-1; continue; }
 
             // Access control
             if (!isAdmin && (op==1||op==2||op==4))
@@ -722,9 +687,10 @@ int main()
                 rowEmpty(12);
                 row("This feature requires ADMIN access.", 12, 12, true);
                 rowEmpty(12);
-                drawBot(12,1);
+                drawBot(12);
                 animError("Admin only feature!");
                 ms(500);
+                waitEnter();
                 continue;
             }
 
@@ -738,7 +704,10 @@ int main()
                 Worker w; w.input();
                 bool dup=false;
                 for (auto &e:workers) if(e.getId()==w.getId()){dup=true;break;}
-                if (dup) { animError("Worker with ID "+to_string(w.getId())+" already exists!"); }
+                if (dup)
+                {
+                    animError("Worker with ID "+to_string(w.getId())+" already exists!");
+                }
                 else
                 {
                     workers.push_back(w); exportExcel(workers);
@@ -783,7 +752,11 @@ int main()
                 if      (ch==1) sortId(workers);
                 else if (ch==2) sortLow(workers);
                 else if (ch==3) sortHigh(workers);
-                else { animError("Invalid, using default."); sortId(workers); }
+                else
+                {
+                    animError("Invalid sort option, using default.");
+                    sortId(workers);
+                }
                 pageHeader("ALL WORKERS", 11, 15);
                 showTable(workers, 11);
                 waitEnter(); break;
@@ -847,7 +820,12 @@ int main()
                     spinner("Searching ...", 14, 300);
                     for (auto &w:workers) if(w.getAge()==age) result.push_back(w);
                 }
-                else { animError("Invalid search option."); waitEnter(); break; }
+                else
+                {
+                    animError("Invalid search option.");
+                    waitEnter();
+                    break;
+                }
 
                 showSearchTable(result);
                 waitEnter(); break;
@@ -861,10 +839,11 @@ int main()
                 spinner("Logging out ...", 6, 400);
                 animSuccess("Logged out! Returning to login page ...");
                 ms(500);
+                waitEnter();
                 break;
             }
 
-            /* EXIT */
+            
             case 7:
                 goodbyeScreen();
                 run = false;
@@ -873,6 +852,7 @@ int main()
             default:
                 animError("Invalid option! Choose from the menu.");
                 ms(300);
+                waitEnter();
             }
 
         } while (op != 6 && op != 7);
