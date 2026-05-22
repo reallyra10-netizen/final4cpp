@@ -1,59 +1,87 @@
 #include "ExcelUtils.hpp"
+#include "ConsoleUtils.hpp"
 #include <iostream>
 #include <xlnt/xlnt.hpp>
 
 using namespace std;
 
-void writeExcel(const std::string &filename, std::vector<Student> &students) {
+// export workers to excel
+void exportExcel(vector<Worker> &workers)
+{
+    spinner("Saving to Excel ...", 11, 350);
+
     xlnt::workbook wb;
     auto ws = wb.active_sheet();
-    ws.title("Sheet1");
+    ws.title("Workers");
 
-    ws.cell("A1").value("Name");
-    ws.cell("B1").value("Age");
+    // header row
+    ws.cell("A1").value("ID");
+    ws.cell("B1").value("Name");
+    ws.cell("C1").value("Age");
+    ws.cell("D1").value("Salary");
+    ws.cell("E1").value("Gender");
+    ws.cell("F1").value("Position");
+    ws.cell("G1").value("Department");
+    ws.cell("H1").value("Date Hired");
 
-    int row = 2;
-    for (auto &student : students) {
-        ws.cell("A" + to_string(row)).value(student.getName());
-        ws.cell("B" + to_string(row)).value(student.getAge());
-        row++;
+    int r = 2;
+    for (auto &w : workers)
+    {
+        ws.cell("A" + to_string(r)).value(w.getId());
+        ws.cell("B" + to_string(r)).value(w.getName());
+        ws.cell("C" + to_string(r)).value(w.getAge());
+        ws.cell("D" + to_string(r)).value(to_string((int)w.getSalary()) + "$");
+        ws.cell("E" + to_string(r)).value(w.getGender());
+        ws.cell("F" + to_string(r)).value(w.getPosition());
+        ws.cell("G" + to_string(r)).value(w.getDepartment());
+        ws.cell("H" + to_string(r)).value(w.getDateHired());
+        r++;
     }
-
-    wb.save(filename);
-    cout << "Successfully saved student records ☁️!" << endl;
+    wb.save("workersdata.xlsx");
 }
 
-std::vector<Student> readExcelToVector(const std::string &filename) {
-    std::vector<Student> students;
-    xlnt::workbook wb;
+// load workers from excel
+void loadWorkersFromExcel(vector<Worker> &workers)
+{
+    workers.clear();
+    spinner("Loading data ...", 11, 350);
 
-    try {
-        wb.load(filename);
-    } catch (...) {
-        cout << "⚠️ Couldn't open file, returning empty student list." << endl;
-        return students;
-    }
+    xlnt::workbook wb;
+    try { wb.load("workersdata.xlsx"); }
+    catch (...) { return; }
 
     auto ws = wb.active_sheet();
-    for (auto row : ws.rows(false)) {
-        if (row[0].to_string() == "Name") continue;
+    bool first = true;
 
-        string name = row[0].to_string();
-        int age = stoi(row[1].to_string());
-        students.emplace_back(name, age);
-    }
-    return students;
-}
+    for (auto row : ws.rows(false))
+    {
+        if (first) { first = false; continue; }
+        try
+        {
+            int    id         = row[0].value<int>();
+            string name       = row[1].to_string();
+            int    age        = row[2].value<int>();
+            string sal        = row[3].to_string();
+            string gender     = row.length() > 4 ? row[4].to_string() : "";
+            string position   = row.length() > 5 ? row[5].to_string() : "";
+            string department = row.length() > 6 ? row[6].to_string() : "";
+            string dateHired  = row.length() > 7 ? row[7].to_string() : "";
 
-void readExcel(const std::string &filename) {
-    xlnt::workbook wb;
-    wb.load(filename);
-    auto ws = wb.active_sheet();
+          
+            auto p = sal.find('$');
+            if (p != string::npos) sal = sal.substr(0, p);
 
-    for (auto row : ws.rows(false)) {
-        for (auto cell : row) {
-            cout << cell.to_string() << " ";
+            Worker w;
+            w.setId(id);
+            w.setName(name);
+            w.setAge(age);
+            w.setSalary(stof(sal));
+            w.setGender(gender);
+            w.setPosition(position);
+            w.setDepartment(department);
+            w.setDateHired(dateHired);
+            workers.push_back(w);
         }
-        cout << endl;
+        catch (...) { continue; }
     }
 }

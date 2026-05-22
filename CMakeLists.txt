@@ -26,11 +26,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(tabulate)
 
-# Add your main.cpp or other source files
-add_executable(WorkerConsole main.cpp src/Student.cpp src/ExcelUtils.cpp src/MenuUtils.cpp src/User.cpp)
-# Tell the compiler where to find all the headers 
-target_include_directories(WorkerConsole PRIVATE include )
-# Link libraries
+add_executable(WorkerConsole
+    main.cpp
+    src/Worker.cpp
+    src/User.cpp
+    src/ConsoleUtils.cpp
+    src/ExcelUtils.cpp
+    src/MenuUtils.cpp
+)
+
+target_include_directories(WorkerConsole PRIVATE include)
 target_link_libraries(WorkerConsole PRIVATE xlnt tabulate)
 
 add_custom_command(TARGET WorkerConsole POST_BUILD

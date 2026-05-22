@@ -1,16 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Student.hpp"
+#include "Worker.hpp"
 
 using std::string;
 
+// export workers 
+void exportExcel(std::vector<Worker> &workers);
 
-
-void writeExcel(const string &filename, std::vector<Student> &students);
-
-
-std::vector<Student> readExcelToVector(const string &filename);
-
-// Read an Excel file and display its contents on console
-void readExcel(const string &filename);
+// load workers 
+void loadWorkersFromExcel(std::vector<Worker> &workers);

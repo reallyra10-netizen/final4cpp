@@ -1,15 +1,33 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "Student.hpp"
+#include "Worker.hpp"
 
-using std::vector; 
+using std::vector;
 using std::string;
 
+// sort
+void sortId  (vector<Worker> &w); 
+void sortLow (vector<Worker> &w); 
+void sortHigh(vector<Worker> &w); 
+
+// show as table
+void showTable      (vector<Worker> &list,  int borderColor);
+void showSearchTable(vector<Worker>  result);
 
 
-// Display all students in a formatted table
-void displayTable(const vector<Student> &students);
+void welcomeScreen();
+void goodbyeScreen();
 
-// Print a menu with custom items
-void printMenu(const vector<string> &items);
+// auth 
+void printAuthMenu();
+void registerNewUser();
+std::pair<bool, string> login();
+void workerPage();
+
+// main 
+void printMainMenu(bool isAdmin);
+void showSortMenu();
+void showSearchMenu(); 
+
+void runApp();
